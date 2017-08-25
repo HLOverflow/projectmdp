@@ -52,6 +52,9 @@ class TcpClient(object):
 
 	def sendData(self, data_str):
 		'''wrapper to send string data over to server'''
+		if(type(data_str) != type("")):
+			print "[!] data_str must be a string"
+			return;
 		if(self.isConnected):
 			self.sock.send(data_str + "\r\n")
 			print "[*] data sent:", data_str
@@ -90,6 +93,7 @@ if __name__ == "__main__":
 	# the following are testing purpose...
 	# you can test this with simple linux netcat server
 	#	nc -nlvp 8888
+	# or can test with the TcpServer.py file
 
 	client = TcpClient("127.0.0.1", 8888)
 	d = []
@@ -97,8 +101,6 @@ if __name__ == "__main__":
 	client.connect()
 
 	client.sendData("abc")
-	client.receiveData(d)
-	client.sendData("def")
 	client.receiveData(d)
 
 	client.disconnect()
