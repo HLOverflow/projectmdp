@@ -2,33 +2,69 @@
 from bluetooth import *
 
 
-server_sock = BluetoothSocket(RFCOMM)
-server_sock.bind(("",PORT_ANY))
-server_sock.listen(1)
-port = server_sock.getsockname()[1]
 uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+name = "MDP-Server"
 
-advertise_service( server_sock, "MDP-Server",
-    service_id = uuid,
-    service_classes = [ uuid, SERIAL_PORT_CLASS ],
-    profiles = [ SERIAL_PORT_PROFILE ],
-    # protocols = [ OBEX_UUID ]
- )
+class BluetoothService(object):
+	def __init__(self, uuid, AdvertisementName):
+		'''constructor'''
+		self.uuid = uuid
+		self.AdvertisementName = AdvertisementName
+		self.server_sock = BluetoothSocket(RFCOMM)
 
-print("Waiting for connection on RFCOMM channel %d" % port)
-client_sock, client_info = server_sock.accept()
-print("Accepted connection from ", client_info)
+	def run(self):
+		self.server_sock.bind(("", PORT_ANY))
+		self.server_sock.listen(1)
+		self.port = server_sock.getsockname()[1]
 
-try:
-    while True:
-        print ("In while loop...")
-        data = client_sock.recv(1024)
-        if len(data) == 0: break
-        print("Received [%s]" % data)
-        client_sock.send(data + " i am pi!")
-except IOError:
-     pass
-print("disconnected")
-client_sock.close()
-server_sock.close()
-print("all done") 
+		# advertisement
+		advertise_service( server_sock, self.AdvertisementName,
+  			service_id = self.uuid,
+    			service_classes = [ self.uuid, SERIAL_PORT_CLASS ],
+    			profiles = [ SERIAL_PORT_PROFILE ],
+    			# protocols = [ OBEX_UUID ]
+ 		)
+		print("Waiting for connection on RFCOMM channel %d" % port)
+
+		# establishing connection with client.
+		client_sock, client_info = server_sock.accept()
+		print("Accepted connection from ", client_info)
+
+		try:
+    			while True:
+				# reading
+        			print ("In while loop...")
+                                data = client_sock.recv(1024)
+        			if len(data) == 0: break		# why break?
+       			print("Received [%s]" % data)
+
+			# processing
+			data = self.processData(data)
+
+			# send back.
+        		client_sock.send(data)
+
+		except IOError:
+     			pass
+		except Exception:
+			self.stop()		# should this be stop?
+		finally:
+			self.stop()		# should this be stop?
+
+	def stop(self):
+		print("disconnected")
+		client_sock.close()
+		server_sock.close()
+		print("all done") 
+
+	def processData(self, data):
+		return data + "i am pi"
+
+
+if __name__ == "__main__":
+	uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+	name = "MDP-Server"
+
+	service = BluetoothService(uuid, name)
+	service.run()
+
