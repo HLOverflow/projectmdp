@@ -1,0 +1,6 @@
+bluetooth
+hostapd
+ssh
+udhcpd
+dhcpcd
+dnsmasq

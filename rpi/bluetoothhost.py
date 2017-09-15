@@ -1,10 +1,6 @@
 #!/usr/bin
 from bluetooth import *
 
-
-uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
-name = "MDP-Server"
-
 class BluetoothService(object):
 	def __init__(self, uuid, AdvertisementName):
 		'''constructor'''
@@ -15,19 +11,19 @@ class BluetoothService(object):
 	def run(self):
 		self.server_sock.bind(("", PORT_ANY))
 		self.server_sock.listen(1)
-		self.port = server_sock.getsockname()[1]
+		self.port = self.server_sock.getsockname()[1]
 
 		# advertisement
-		advertise_service( server_sock, self.AdvertisementName,
+		advertise_service( self.server_sock, self.AdvertisementName,
   			service_id = self.uuid,
     			service_classes = [ self.uuid, SERIAL_PORT_CLASS ],
     			profiles = [ SERIAL_PORT_PROFILE ],
     			# protocols = [ OBEX_UUID ]
  		)
-		print("Waiting for connection on RFCOMM channel %d" % port)
+		print("Waiting for connection on RFCOMM channel %d" % self.port)
 
 		# establishing connection with client.
-		client_sock, client_info = server_sock.accept()
+		client_sock, client_info = self.server_sock.accept()
 		print("Accepted connection from ", client_info)
 
 		try:
@@ -35,31 +31,35 @@ class BluetoothService(object):
 				# reading
         			print ("In while loop...")
                                 data = client_sock.recv(1024)
-        			if len(data) == 0: break		# why break?
-       			print("Received [%s]" % data)
+				print ("after recv.")
+        			if len(data) == 0:			# hardly will enter but for assurance.
+					print "length data is 0"
+					break
+				else:
+       					print("Received [%s]" % data)
 
-			# processing
-			data = self.processData(data)
+					# processing
+					data = self.processData(data)
 
-			# send back.
-        		client_sock.send(data)
+					# send back.
+        				client_sock.send(data)
 
 		except IOError:
      			pass
 		except Exception:
+			client_sock.close()
 			self.stop()		# should this be stop?
 		finally:
+			client_sock.close()
 			self.stop()		# should this be stop?
 
 	def stop(self):
 		print("disconnected")
-		client_sock.close()
-		server_sock.close()
-		print("all done") 
+		self.server_sock.close()
+		print("all done")
 
 	def processData(self, data):
 		return data + "i am pi"
-
 
 if __name__ == "__main__":
 	uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
