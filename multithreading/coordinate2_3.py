@@ -1,6 +1,6 @@
 import threading
 from Queue import Queue
-from define import *
+#from define import *
 
 import socket
 from bluetooth import *
@@ -17,7 +17,7 @@ class Wifi(object):
         # binding to port
         try:
             self.server.bind(("", self.port))
-        except socker.error as msg:
+        except socket.error as msg:
             print "[!] Bind to port %d failed.\n\tError Code: %d \n\tMessage: %s" % (self.port, msg[0], msg[1])
         self.server.listen(1)
         print "[*] Wifi Initialization complete."
@@ -25,16 +25,17 @@ class Wifi(object):
     def receiveData(self):
         # function with while loop should put in thread.
         while 1:        # if connection got cut off, will try to listen for new connection
-            print "[*] Waiting for Wifi Connection on port %s" % self.port
-            self.client, self.clientaddr = self.server.accept()
-            print "[*] Connected to PC via wifi."
+            self.connect()
             while 1:    # while connection still ok, keep receiving.
                 try:
                     data = self.client.recv(BUF)
-                    # possible to put processing here
-                    
-                    self.queue.put(self.indicator + data)       # store data into queue to be processed.
-                    print "[*] received from PC and put in queue: %s" % data
+                    if(data):
+                        # possible to put processing here
+                        
+                        self.queue.put(self.indicator + data)       # store data into queue to be processed.
+                        print "[*] received from PC and put in queue: %s" % data
+                    else:
+                        break			# data will be nothing when disconnected
                 except socket.error as msg:
                     print "[!] Unable to receive from PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
                     break  #accept new connections
@@ -42,11 +43,19 @@ class Wifi(object):
     def sendData(self, data):
         # for allocator to call.
         try:
-            self.client.send(data + "\n")
-            print "[*] Send data: %s" % data
+            #self.connect() 	# possible for connection to break when required to send data. so need check on connection and connect if needed.
+            self.client.send(data + "\r\n")
+            print "[*] Send data to Pc: %s" % data
         except socket.error as msg:
             print "[!] Cannot send data to PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
-        
+
+    def connect(self):
+        try:
+             print "[*] Waiting for Wifi Connection on port %s" % self.port
+             self.client, self.clientaddr = self.server.accept()
+             print "[*] Connected to PC via wifi."
+        except:
+             print "[!] Cannot accept connection to PC via wifi. " 
 
 class Bt(object):
     def __init__(self, queue):
@@ -70,42 +79,47 @@ class Bt(object):
     def receiveData(self):
         # refer to wifi
         while 1:
-            print "[*] Waiting for Bluetooth Connection on port %s" % self.port
-            self.client, self.clientinfo = self.server.accept()
-            print "[*] Connected to Nexus via bluetooth."
+            self.connect()
             while 1:
                 try:
                     data = self.client.recv(BUF)
-                    # maybe need processing here
-                    
-                    self.queue.put(self.indicator + data)
-                    print "[*] received from Nexus and put in queue: %s" % data
+                    if(data):
+                        # maybe need processing here
+                        
+                        self.queue.put(self.indicator + data)
+                        print "[*] received from Nexus and put in queue: %s" % data
                 except:
                     print "[!] Unable to receive from Nexus"
                     break
     def sendData(self, data):
         try:
-            self.client.send(data + "\n")
+            self.client.send(data + "\r\n")
             print "[*] Send data: %s" % data
         except:
             print "[!] Cannot send data to Nexus."
 
+    def connect(self):
+        try:
+            print "[*] Waiting for Bluetooth Connection on port %s" % self.port
+            self.client, self.clientinfo = self.server.accept()
+            print "[*] Connected to Nexus via bluetooth."
+        except:
+            print "[!] Cannot accept connection to Nexus via bluetooth."
+
 class Usb(object):
     def __init__(self, queue):
         self.queue = queue
-        self.port = '/dev/ttyACM0'
+        self.ports = ['/dev/ttyACM0', '/dev/ttyACM1','/dev/ttyACM2', '/dev/ttyACM3', '/dev/ttyACM4', '/dev/ttyACM5']
 	self.baud_rate = 9600
 	self.indicator = "From Arduino:"
         
     def receiveData(self):
         while 1:
-            print "[*] Attempting to connect to Arduino"
-            self.ser = serial.Serial(self.port, self.baud_rate)
-            print "[*] Serial link connected"
+            self.connect()
             while 1:
                 try:
                     data = self.ser.readline()
-                    # maybe need some processing here
+                    # maybe can do some processing here
                     
                     self.queue.put(self.indicator + data)
                 except:
@@ -113,12 +127,21 @@ class Usb(object):
                     break
     def sendData(self, data):
         try:
-            self.ser.write(data)
+            self.ser.write(data + "\r\n")
             print "[*] Send data: %s" % data
         except:
             print "[!] Cannot send data to Arduino."
-            
-        
+
+    def connect(self):
+        for port in self.ports:
+            try:
+                print "[*] Attempting to connect to Arduino"
+                self.ser = serial.Serial(self.port, self.baud_rate)
+                print "[*] Serial link connected"
+                break
+            except:
+                print "%s didn't work. Trying the next port" % port
+        print "All serial ports listed did not work."
 
 ##class Allocator(object):
 ##    def __init__(self, queue, wifi, bt, usb):
@@ -162,6 +185,7 @@ def allocate(queue, wifi, bt, usb):
             wifi.sendData(data)
             bt.sendData(data)
         else:
+            print "data not sent to anyone: %s" % data
             pass
 
 if __name__ == "__main__":

@@ -123,7 +123,7 @@ class Usb(Bt):
                 print "usb receive data problem"
                 break
             if(data):
-                self.queue.put("From usb:" + data)
+                self.queue.put("From Usb:" + data)
                 print "data put into queue by usb"
         self.disconnect()
 
