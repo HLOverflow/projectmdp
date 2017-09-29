@@ -17,7 +17,7 @@ class BluetoothService(object):
 		advertise_service( self.server_sock, self.AdvertisementName,
   			service_id = self.uuid,
     			service_classes = [ self.uuid, SERIAL_PORT_CLASS ],
-    			profiles = [ SERIAL_PORT_PROFILE ],
+    			profiles = [ SERIAL_PORT_PROFILE ]
     			# protocols = [ OBEX_UUID ]
  		)
 		print("Waiting for connection on RFCOMM channel %d" % self.port)
