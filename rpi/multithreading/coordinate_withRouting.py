@@ -220,7 +220,7 @@ class RaspberryPi(object):
         self.queue.put(letter2)
 
     def processRequest(self, data):
-        '''Given the letter message, determine if message is sensor data or just a requesting for the map'''
+        '''Given the letter message, determine if message is for updating map or just a requesting for the map'''
         if ANDROID.REQ_ARENA in data:
             self.requestArena(ANDROID.NAME)
         elif PC.REQ_ARENA in data:
