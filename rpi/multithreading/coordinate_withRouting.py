@@ -160,26 +160,28 @@ class Usb(object):
         return letter
         
     def receiveData(self):  # sensor data from arduino
+        #while 1:
+        self.connect()
         while 1:
-            self.connect()
-            while 1:
-                try:
-                    data = self.ser.readline()   # arduino will send us string. 
-                    if ARDUINO.ARDUINO_READY in data:
-                        self.readytosend = true
-                    else:
-                        letter = self.generateLetter(data) #perhaps no need letter for arduino. can possibly connect to Rpi directly.
-                        self.queue.put(letter)
-                except:
-                    print "[!] Unable to receive from Arduino"
-                    break
+            try:
+                data = self.ser.readline()   # arduino will send us string. 
+                if ARDUINO.ARDUINO_READY in data:
+                    self.readytosend = true
+                else:
+                    letter = self.generateLetter(data) #perhaps no need letter for arduino. can possibly connect to Rpi directly.
+                    self.queue.put(letter)
+            except:
+                print "[!] Unable to receive from Arduino"
+                break
+                
     def sendData(self, cmd):   # commands to arduino ( rpi must send int bytes)
         try:
             self.ser.write(bytes(cmd))
             print "[*] Send data: %x" % cmd
-            self.readytosend = false
         except:
             print "[!] Cannot send data to Arduino."
+        finally:
+            self.readytosend = false                #after every send. must set this back to false.
 
     def connect(self):
         for port in self.ports:
@@ -191,6 +193,11 @@ class Usb(object):
             except:
                 print "%s didn't work. Trying the next port" % port
         print "All serial ports listed did not work."
+
+    def wait(self):
+        while(!usb.readytosend):
+            pass
+        return None
 
 class RaspberryPi(object):
     '''Rpi have to keep a memory of the map (explored vs unexplored and obstacles vs free)'''
@@ -219,14 +226,21 @@ class RaspberryPi(object):
         if ANDROID.REQ_ARENA in data:
             self.requestArena(ANDROID.NAME)
 #        elif PC.REQ_ARENA in data:
-#            self.requestArena(PC.NAME)
+#            self.requestArena(PC.NAME) 
         elif ARDUINO.ARDUINO_READY in data:
             self.usb.readytosend = true
         else:
             # should be arduino's sensor data to be processed by rpi.
             self.updateMap(data)
 
-def allocate(queue, wifi, bt, usb, rpi):
+def arduinoSending(queue_usb, usb):
+    while 1:
+        cmd = queue_usb.get()
+        usb.wait()                      # wait for READY signal from arduino.
+        usb.sendData(cmd)
+
+
+def allocate(queue, queue_usb, wifi, bt, usb, rpi):
     '''Constantly get letter from queue and sending them to correct destination.'''
     while 1:
         letter = queue.get()
@@ -237,18 +251,16 @@ def allocate(queue, wifi, bt, usb, rpi):
         elif bt.indictor in letter.To:
             bt.sendData(data)
         elif usb.indicator in letter.To:
-            # have to block the send until can verify arduino is ready
-            while !usb.readytosend:
-                pass
             # must do translation before sending!!!
+            # have to block the send until can verify arduino is ready
             if letter.From == ANDROID.NAME:
                 cmdarray = AndroidtoArduinoTranslate(data)
                 for cmd in cmdarray:
-                    usb.sendData(cmd)
+                    queue_usb.put(cmd);         # delegate the work to the another thread, prevents blocking in this thread.
             elif letter.From == PC.NAME:
                 cmdarray = PCtoArduinoTranslate(data)
                 for cmd in cmdarray:
-                    usb.sendData(cmd)
+                    queue_usb.put(cmd)          # delegate the work to the another thread, prevents blocking in this thread.
             else:
                 pass
         elif RPI.NAME in letter.To:
@@ -292,26 +304,30 @@ def PCtoArduinoTranslate(data):
 
 if __name__ == "__main__":
     q = Queue()
+    q_usb = Queue()
     wifi = Wifi(q)
     bt = Bt(q)
     usb = Usb(q)
     rpi = RaspberryPi(q)
     
-    wifi_receive = threading.Thread(target=wifi.receiveData);
-    bt_receive = threading.Thread(target=bt.receiveData);
-    usb_receive = threading.Thread(target=usb.receiveData);
-    
-    allocator = threading.Thread(target=allocate, args=(q, wifi, bt, usb, rpi));
+    wifi_receive = threading.Thread(target=wifi.receiveData)
+    bt_receive = threading.Thread(target=bt.receiveData)
+    usb_receive = threading.Thread(target=usb.receiveData)
+
+    arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
+    allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb, rpi))
 
     wifi_receive.start()
     bt_receive.start()
     usb_receive.start()
+    arduino_send.start()
     allocator.start()
 
     # not sure if these will help at the end because the thread tasks are always running in a while loop...
     wifi_receive.join()
     bt_receive.join()
     usb_receive.join()
+    arduino_send.join()
     allocator.join()
     print "program end"
     

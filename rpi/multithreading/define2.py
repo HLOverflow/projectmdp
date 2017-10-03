@@ -33,7 +33,7 @@ class PC:
 class ARDUINO:
     NAME = "Arduino"
     ARDUINO_READY = "225"
-    RPI_READY = 0xE1
+    RPI_READY = 0xE1            #need anot? actually no need.
     MOVE_FORWARD = 0xE2
     MOVE_FORWARD_XCM = 0xE3
     ROTATE_LEFT = 0xE4
