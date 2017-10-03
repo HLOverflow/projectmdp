@@ -1,5 +1,7 @@
 import re
 
+BUF=2048
+
 class Letter:
     def __init__(self):
         self.From = None
@@ -32,7 +34,7 @@ class PC:
 
 class ARDUINO:
     NAME = "Arduino"
-    ARDUINO_READY = "225"
+    ARDUINO_READY = "224"
     RPI_READY = 0xE1            #need anot? actually no need.
     MOVE_FORWARD = 0xE2
     MOVE_FORWARD_XCM = 0xE3
@@ -40,6 +42,7 @@ class ARDUINO:
     ROTATE_RIGHT = 0xE5
     REVERSE = "?"
     GET_SENSOR_DATA = 0xE6
+    SENSOR_DATA_RESPONSE = "239"
 
 class RPI:
     NAME = "Rpi"

@@ -6,6 +6,8 @@ import socket
 from bluetooth import *
 import serial
 
+import traceback
+
 # what has changed?
 # - introduced Letter in define2.py
 # - For each component, upon receiving data will generate a letter to address to correct destination.
@@ -26,6 +28,7 @@ class Wifi(object):
             self.server.bind(("", self.port))
         except socket.error as msg:
             print "[!] Bind to port %d failed.\n\tError Code: %d \n\tMessage: %s" % (self.port, msg[0], msg[1])
+            traceback.print_exc()
         self.server.listen(1)
         print "[*] Wifi Initialization complete."
 
@@ -55,6 +58,7 @@ class Wifi(object):
                         break			# data will be nothing when disconnected
                 except socket.error as msg:
                     print "[!] Unable to receive from PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
+                    traceback.print_exc()
                     break  #accept new connections
 
     def sendData(self, data):
@@ -65,6 +69,7 @@ class Wifi(object):
             print "[*] Send data to Pc: %s" % data
         except socket.error as msg:
             print "[!] Cannot send data to PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
+            traceback.print_exc()
 
     def connect(self):
         try:
@@ -73,6 +78,7 @@ class Wifi(object):
              print "[*] Connected to PC via wifi."
         except:
              print "[!] Cannot accept connection to PC via wifi. "
+             traceback.print_exc()
 
 class Bt(object):
     def __init__(self, queue):
@@ -126,13 +132,15 @@ class Bt(object):
                         print "[*] received from Nexus and put in queue: %s" % data
                 except:
                     print "[!] Unable to receive from Nexus"
+                    traceback.print_exc()
                     break
     def sendData(self, data):
         try:
             self.client.send(data + "\r\n")
-            print "[*] Send data: %s" % data
+            print "[*] Send data to bluetooth: %s" % data
         except:
             print "[!] Cannot send data to Nexus."
+            traceback.print_exc()
 
     def connect(self):
         try:
@@ -141,14 +149,16 @@ class Bt(object):
             print "[*] Connected to Nexus via bluetooth."
         except:
             print "[!] Cannot accept connection to Nexus via bluetooth."
+            traceback.print_exc()
 
 class Usb(object):
     def __init__(self, queue):
         self.queue = queue
-        self.ports = ['/dev/ttyACM0', '/dev/ttyACM1','/dev/ttyACM2', '/dev/ttyACM3', '/dev/ttyACM4', '/dev/ttyACM5', '/dev/ttyAMA0', '/dev/ttyAMA1','/dev/ttyAMA2', '/dev/ttyAMA3', '/dev/ttyAMA4', '/dev/ttyAMA5' ]
+        self.ports = ['/dev/ttyACM0', '/dev/ttyACM1','/dev/ttyACM2', '/dev/ttyACM3', '/dev/ttyACM4', '/dev/ttyACM5']
         self.baud_rate = 2000000
         self.indicator = ARDUINO.NAME
-        self.readytosend = false
+        self.readytosend = False
+        self.isconnected = False
 
     def generateLetter(self, data):
         letter = Letter()
@@ -156,32 +166,45 @@ class Usb(object):
         letter.From = self.indicator
 
         #no other route - do we even need a letter? Rpi can directly process
-        letter.To = RPI.NAME
+        letter.To = PC.NAME
         return letter
         
     def receiveData(self):  # sensor data from arduino
-        #while 1:
-        self.connect()
         while 1:
-            try:
-                data = self.ser.readline()   # arduino will send us string. 
-                if ARDUINO.ARDUINO_READY in data:
-                    self.readytosend = true
-                else:
-                    letter = self.generateLetter(data) #perhaps no need letter for arduino. can possibly connect to Rpi directly.
-                    self.queue.put(letter)
-            except:
-                print "[!] Unable to receive from Arduino"
-                break
+            self.isconnected = self.connect()
+            if self.isconnected:
+                while 1:
+                    try:
+                        data = self.ser.readline()   # arduino will send us string. 
+                        if data:
+                            if ARDUINO.ARDUINO_READY in data:
+                                self.readytosend = True
+                                print "Arduino sent rpi READY SIGNAL."
+                            else:
+                                if ARDUINO.SENSOR_DATA_RESPONSE in data:
+                                    # truncate the header first
+                                    length = len(ARDUINO.SENSOR_DATA_RESPONSE)
+                                    data=data[length:]
+                                    # send
+                                    letter = self.generateLetter(data) #perhaps no need letter for arduino. can possibly connect to Rpi directly.
+                                    self.queue.put(letter)
+                                    print "[*] received from arduino and put in queue: %s" % data
+                    except:
+                        print "[!] Unable to receive from Arduino"
+                        traceback.print_exc()
+                        break
+            else:
+                print "not connected to arduino."
                 
     def sendData(self, cmd):   # commands to arduino ( rpi must send int bytes)
         try:
             self.ser.write(bytes(cmd))
-            print "[*] Send data: %x" % cmd
+            print "[*] Send data to arduino: %x" % cmd
         except:
             print "[!] Cannot send data to Arduino."
+            traceback.print_exc()
         finally:
-            self.readytosend = false                #after every send. must set this back to false.
+            self.readytosend = False                #after every send. must set this back to false.
 
     def connect(self):
         for port in self.ports:
@@ -189,13 +212,15 @@ class Usb(object):
                 print "[*] Attempting to connect to Arduino"
                 self.ser = serial.Serial(port, self.baud_rate, timeout=1)
                 print "[*] Serial link connected"
-                break
+                return True
             except:
                 print "%s didn't work. Trying the next port" % port
+                traceback.print_exc()
         print "All serial ports listed did not work."
+        return False
 
     def wait(self):
-        while(!usb.readytosend):
+        while(not usb.readytosend):
             pass
         return None
 
@@ -227,8 +252,6 @@ class RaspberryPi(object):
             self.requestArena(ANDROID.NAME)
 #        elif PC.REQ_ARENA in data:
 #            self.requestArena(PC.NAME) 
-        elif ARDUINO.ARDUINO_READY in data:
-            self.usb.readytosend = true
         else:
             # should be arduino's sensor data to be processed by rpi.
             self.updateMap(data)
@@ -246,9 +269,9 @@ def allocate(queue, queue_usb, wifi, bt, usb, rpi):
         letter = queue.get()
         print "Sending letter from [%s] to [%s]." % (letter.From, letter.To)
         data = letter.Message
-        if wifi.indictor in letter.To:
+        if wifi.indicator in letter.To:
             wifi.sendData(data)
-        elif bt.indictor in letter.To:
+        elif bt.indicator in letter.To:
             bt.sendData(data)
         elif usb.indicator in letter.To:
             # must do translation before sending!!!
