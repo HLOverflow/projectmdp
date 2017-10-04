@@ -56,7 +56,7 @@ class Wifi(object):
                         self.queue.put(letter)       # store data into queue to be processed.
                         print "[*] received from PC and put in queue: %s" % data
                     else:
-                        break           # data will be nothing when disconnected
+                        break			# data will be nothing when disconnected
                 except socket.error as msg:
                     print "[!] Unable to receive from PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
                     traceback.print_exc()
@@ -65,7 +65,7 @@ class Wifi(object):
     def sendData(self, data):
         # for allocator to call.
         try:
-            #self.connect()     # possible for connection to break when required to send data. so need check on connection and connect if needed.
+            #self.connect() 	# possible for connection to break when required to send data. so need check on connection and connect if needed.
             self.client.send(data + "\r\n")
             print "[*] Send data to Pc: %s" % data
         except socket.error as msg:
@@ -298,21 +298,21 @@ if __name__ == "__main__":
     
     wifi_receive = threading.Thread(target=wifi.receiveData)
     bt_receive = threading.Thread(target=bt.receiveData)
-    usb_receive = threading.Thread(target=usb.receiveData)
+    #usb_receive = threading.Thread(target=usb.receiveData)
 
     arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
     allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
 
     wifi_receive.start()
     bt_receive.start()
-    usb_receive.start()
+    #usb_receive.start()
     arduino_send.start()
     allocator.start()
 
     # not sure if these will help at the end because the thread tasks are always running in a while loop...
     wifi_receive.join()
     bt_receive.join()
-    usb_receive.join()
+    #usb_receive.join()
     arduino_send.join()
     allocator.join()
     print "program end"

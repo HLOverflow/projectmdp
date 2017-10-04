@@ -8,8 +8,11 @@ class Letter:
         self.To = None
         self.Message = None
 
+    def printcontent(self):
+        print "FROM: %s TO: %s MESSAGE: %s" % (self.From, self.To, self.Message)
+
 class ANDROID:
-    NAME = "Android"
+    NAME = "ANDROID"
     REQ_ARENA = "RA"
     MOVE_FORWARD = "FC"
     ROTATE_LEFT = "LC"
@@ -21,7 +24,7 @@ class ANDROID:
     START_SHORTESTPATH = "SSP"
 
 class PC:
-    NAME = "PC"
+    NAME = "ALGO"
     SEND_ARENA = re.compile("MAP (.+?)\n")
     MOVE_FORWARD = "INS\nF\n"
     MOVE_FORWARD_XCM = re.compile("INS\n(\d+?)\n")
@@ -33,7 +36,7 @@ class PC:
 
 
 class ARDUINO:
-    NAME = "Arduino"
+    NAME = "ARDUINO"
     ARDUINO_READY = "224"
     RPI_READY = 0xE1            #need anot? actually no need.
     MOVE_FORWARD = 0xE2
@@ -45,4 +48,4 @@ class ARDUINO:
     SENSOR_DATA_RESPONSE = "239"
 
 class RPI:
-    NAME = "Rpi"
+    NAME = "RPI"
