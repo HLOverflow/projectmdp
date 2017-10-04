@@ -37,15 +37,15 @@ class PC:
 
 class ARDUINO:
     NAME = "ARDUINO"
-    ARDUINO_READY = "224"
-    RPI_READY = 0xE1            #need anot? actually no need.
-    MOVE_FORWARD = 0xE2
-    MOVE_FORWARD_XCM = 0xE3
-    ROTATE_LEFT = 0xE4
-    ROTATE_RIGHT = 0xE5
+    ARDUINO_READY = str(0xe0)
+    RPI_READY = str(0xE1)            #need anot? actually no need.
+    MOVE_FORWARD = str(0xE2)
+    MOVE_FORWARD_XCM = str(0xE3)
+    ROTATE_LEFT = str(0xE4)
+    ROTATE_RIGHT = str(0xE5)
     REVERSE = "?"
-    GET_SENSOR_DATA = 0xE6
-    SENSOR_DATA_RESPONSE = "239"
+    GET_SENSOR_DATA = str(0xE6)
+    SENSOR_DATA_RESPONSE = str(0xef)
 
 class RPI:
     NAME = "RPI"

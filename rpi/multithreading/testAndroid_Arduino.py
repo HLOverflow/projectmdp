@@ -150,8 +150,9 @@ class Bt(object):
             traceback.print_exc()
 
 class Usb(object):
-    def __init__(self, queue):
+    def __init__(self, queue, queue_usb):
         self.queue = queue
+        self.queue_usb = queue_usb
         self.ports = ['/dev/ttyACM0', '/dev/ttyACM1','/dev/ttyACM2', '/dev/ttyACM3', '/dev/ttyACM4', '/dev/ttyACM5']
         self.baud_rate = 2000000
         self.indicator = ARDUINO.NAME
@@ -174,6 +175,10 @@ class Usb(object):
             count+=1
             self.isconnected = self.connect()
             if self.isconnected:
+                # send a dummy command to arduino.
+                self.queue_usb.put(ARDUINO.ROTATE_RIGHT)
+
+                # start receiving
                 while 1:
                     try:
                         data = self.ser.readline()   # arduino will send us string. 
@@ -201,7 +206,7 @@ class Usb(object):
                 
     def sendData(self, cmd):   # commands to arduino ( rpi must send int bytes)
         try:
-            self.ser.write(bytes(cmd))
+            self.ser.write(cmd)
             print "[*] Sent data to arduino: %x" % cmd
         except:
             print "[!] Cannot send data to Arduino."
@@ -252,12 +257,16 @@ def allocate(queue, queue_usb, wifi, bt, usb):
             # have to block the send until can verify arduino is ready
             if letter.From == ANDROID.NAME:
                 cmdarray = AndroidtoArduinoTranslate(data)
-                for cmd in cmdarray:
-                    queue_usb.put(cmd);         # delegate the work to the another thread, prevents blocking in this thread.
+                #for cmd in cmdarray:
+                #    queue_usb.put(cmd);         # delegate the work to the another thread, prevents blocking in this thread.
+                command='a'.join(cmdarray)
+                queue_usb.put(command);
             elif letter.From == PC.NAME:
                 cmdarray = PCtoArduinoTranslate(data)
-                for cmd in cmdarray:
-                    queue_usb.put(cmd)          # delegate the work to the another thread, prevents blocking in this thread.
+                #for cmd in cmdarray:
+                #    queue_usb.put(cmd)          # delegate the work to the another thread, prevents blocking in this thread.
+                command='a'.join(cmdarray)
+                queue_usb.put(command);
             else:
                 pass
         else:
@@ -302,19 +311,18 @@ if __name__ == "__main__":
     q_usb = Queue()
     wifi = Wifi(q)
     bt = Bt(q)
-    usb = Usb(q)
+    usb = Usb(q, q_usb)
     
     #wifi_receive = threading.Thread(target=wifi.receiveData)
     bt_receive = threading.Thread(target=bt.receiveData)
-    usb_receive = threading.Thread(target=usb.receiveData)
-
     arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
+    usb_receive = threading.Thread(target=usb.receiveData)
     allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
 
     #wifi_receive.start()
     bt_receive.start()
-    usb_receive.start()
     arduino_send.start()
+    usb_receive.start()
     allocator.start()
 
     # not sure if these will help at the end because the thread tasks are always running in a while loop...
