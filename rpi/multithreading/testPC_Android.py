@@ -56,7 +56,7 @@ class Wifi(object):
                         self.queue.put(letter)       # store data into queue to be processed.
                         print "[*] received from PC and put in queue: %s" % data
                     else:
-                        break			# data will be nothing when disconnected
+                        break           # data will be nothing when disconnected
                 except socket.error as msg:
                     print "[!] Unable to receive from PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
                     traceback.print_exc()
@@ -65,9 +65,9 @@ class Wifi(object):
     def sendData(self, data):
         # for allocator to call.
         try:
-            #self.connect() 	# possible for connection to break when required to send data. so need check on connection and connect if needed.
+            #self.connect()     # possible for connection to break when required to send data. so need check on connection and connect if needed.
             self.client.send(data + "\r\n")
-            print "[*] Send data to Pc: %s" % data
+            print "[*] Sent data to Pc: %s" % data
         except socket.error as msg:
             print "[!] Cannot send data to PC.\n\tError Code: %d\n\tMessage: %s" % (msg[0], msg[1])
             traceback.print_exc()
@@ -135,7 +135,7 @@ class Bt(object):
     def sendData(self, data):
         try:
             self.client.send(data + "\r\n")
-            print "[*] Send data to bluetooth: %s" % data
+            print "[*] Sent data to bluetooth: %s" % data
         except:
             print "[!] Cannot send data to Nexus."
             traceback.print_exc()
@@ -169,7 +169,9 @@ class Usb(object):
         return letter
         
     def receiveData(self):  # sensor data from arduino
-        while 1:
+        count = 0
+        while count < 5:
+            count+=1
             self.isconnected = self.connect()
             if self.isconnected:
                 while 1:
@@ -195,11 +197,12 @@ class Usb(object):
                         break
             else:
                 print "not connected to arduino."
+        print "[!] Check your USB port! "
                 
     def sendData(self, cmd):   # commands to arduino ( rpi must send int bytes)
         try:
             self.ser.write(bytes(cmd))
-            print "[*] Send data to arduino: %x" % cmd
+            print "[*] Sent data to arduino: %x" % cmd
         except:
             print "[!] Cannot send data to Arduino."
             traceback.print_exc()
@@ -215,18 +218,21 @@ class Usb(object):
                 return True
             except:
                 print "%s didn't work. Trying the next port" % port
-                traceback.print_exc()
+                #traceback.print_exc()
         print "All serial ports listed did not work."
         return False
 
     def wait(self):
         while(not usb.readytosend):
             pass
+        print "exit usb wait."
         return None
 
 def arduinoSending(queue_usb, usb):
     while 1:
         cmd = queue_usb.get()
+        print "got cmd from queue_usb: %x" % cmd
+        print "waiting for readytosend..."
         usb.wait()                      # wait for READY signal from arduino.
         usb.sendData(cmd)
 
@@ -270,6 +276,7 @@ def AndroidtoArduinoTranslate(data):
         output=[ARDUINO.ROTATE_RIGHT]
     else:
         pass
+    print "translation from %s to " % data, output 
     return output
 
 def PCtoArduinoTranslate(data):
@@ -280,13 +287,12 @@ def PCtoArduinoTranslate(data):
         output=[ARDUINO.ROTATE_LEFT]
     elif PC.ROTATE_RIGHT in data:
         output=[ARDUINO.ROTATE_RIGHT]
-    elif PC.ROTATE_RIGHT in data:
-        output=[ARDUINO.ROTATE_RIGHT]
     elif PC.MOVE_FORWARD_XCM.search(data):
         cm=int(PC.MOVE_FORWARD_XCM.findall(data)[0])
         output=[ARDUINO.MOVE_FORWARD_XCM,cm]
     else:
         pass
+    print "translation from %s to " % data, output 
     return output
 
 if __name__ == "__main__":
@@ -300,20 +306,20 @@ if __name__ == "__main__":
     bt_receive = threading.Thread(target=bt.receiveData)
     #usb_receive = threading.Thread(target=usb.receiveData)
 
-    arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
+    #arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
     allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
 
     wifi_receive.start()
     bt_receive.start()
     #usb_receive.start()
-    arduino_send.start()
+    #arduino_send.start()
     allocator.start()
 
     # not sure if these will help at the end because the thread tasks are always running in a while loop...
     wifi_receive.join()
     bt_receive.join()
     #usb_receive.join()
-    arduino_send.join()
+    #arduino_send.join()
     allocator.join()
     print "program end"
     
