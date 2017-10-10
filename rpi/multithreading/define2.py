@@ -1,4 +1,5 @@
 import re
+from color import *
 
 BUF=2048
 
@@ -9,7 +10,7 @@ class Letter:
         self.Message = None
 
     def printcontent(self):
-        print "FROM: %s TO: %s MESSAGE: %s" % (self.From, self.To, repr(self.Message))
+        print colorString("FROM: %s TO: %s MESSAGE: %s" % (self.From, self.To, repr(self.Message)), BLUE)
 
 class ANDROID:
     NAME = "ANDROID"
