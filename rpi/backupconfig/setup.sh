@@ -22,18 +22,8 @@ for i in $(ls files); do
 done;
 echo ;
 
-# make services start on reboot
+# make service start on reboot
 for i in $(cat listofservices); do
 	echo systemctl enable $i;
 done;
 echo ;
-
-# make refresh the services
-for i in $(cat listofservices); do
-        echo service $i stop;
-done;
-for i in $(cat listofservices); do
-        echo service $i start;
-done;
-echo ;
-
