@@ -1,0 +1,18 @@
+optimize1		Week8 Tuesday:	At SW project Lab. Exploration seems pretty ok with some blocks.
+optimize2_shaking	Week8 Thursday:	At HW project Lab. calibration went wrong. Robot stuck in a loop and keep shaking.
+optimize3_shaking		''	another run also the same thing happen.
+optimize4_stuck			''	Moved block to the wall. Still stuck and shaking.
+optimize5_offthegrid		''	Off the grid
+optimize6_wrongMsg		''	Request Sensor data message sent to Android instead of Arduino.
+optimize7_workingFine		''	Looks fine.
+optimize8_androidBrokenMsg	''	android lost some messages. Android's receiving problem. RPI sent fine.
+optimize9_androidPartialMsg	''	android still same problem. Managed to explore entire maze properly. Unable to return to starting point
+maze1_run1			''	Arena week 11. phantom blocks appearing in the map.
+maze1_run3			''	phantom block. unable to explore the way point.
+maze1_run4			''	queue_usb queue mutated.
+maze1_run5			''	same problem
+maze1_run6			''	same problem
+outsidelab1			''	phantom?
+outsidelab2			''	no problem. 2 min 28 seconds
+outsidelab3			''	arduino RS crash?
+outsidelab4			''	2 min 21 seconds

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import time
 import threading
 from Queue import Queue
 from define2 import *
@@ -12,6 +12,13 @@ import traceback
 from color import *
 from printTime import *
 
+# pi@MDPGrp25:~/shortcut $ python
+# Python 2.7.13 (default, Jan 19 2017, 14:48:08)
+# [GCC 6.3.0 20170124] on linux2
+# Type "help", "copyright", "credits" or "license" for more information.
+# >>> import testAll3
+# >>> help(testAll3)
+
 __author__ = "Hui Lian"
 __doc__ = '''This is to be loaded inside Raspberry Pi. 
 This program can be killed using another terminal:  
@@ -21,6 +28,7 @@ This program should be ran with the following commands for best results:
 
 $ script LOGS/<filename>
 $ sudo python testAll3.py
+# exit
 
 ------------------------
 This will set up a total of 5 threads: 
@@ -43,13 +51,14 @@ Good features:
 - Translation done for arduino integers command for Android and PC.
 --------------------------
 Possible issue faced:
-- If wifi cannot bind to port 8000, wait for a few minute until netstat for port 8000 stops FIN.
+- If wifi cannot bind to port 8000, wait for a few minute until netstat for port 8000 stops FIN_WAIT2.
 $ netstat -antp
 
 '''
 
 class Wifi(object):
     def __init__(self, queue):
+        '''Constructor will initialize and attempt to bind to port 8000'''
         self.queue = queue
         self.server = socket.socket()   #default TCP
         self.port=8000
@@ -65,6 +74,7 @@ class Wifi(object):
         print "[*] Wifi Initialization complete."
 
     def generateLetter(self, data):
+        '''generate a Letter object with correct recipient. Function will check for recipient in the header, then will remove the header from the data.'''
         letter = Letter()
         letter.From = self.indicator
 
@@ -82,13 +92,31 @@ class Wifi(object):
             letter.Message = data[len(ARDUINO.NAME)+1:]
         return letter
 
+    def receiveUntil(self):
+        buf = []
+        while 1:
+            char = self.client.recv(1);
+            if char == '\r':
+                char = self.client.recv(1);
+                if char == '\n':
+                    break
+                else:
+                    print repr("didn't get \n")
+            buf.append( char)
+            #print "appended:", repr(char)
+        return ''.join(buf)
+
+
     def receiveData(self):
+        '''This function is a worker function in a thread. This function will try to receive data forever from connected client. 
+        If connection is broken, will fall back to LISTEN state.'''
+
         # function with while loop should put in thread.
         while 1:        # if connection got cut off, will try to listen for new connection
             self.connect()
             while 1:    # while connection still ok, keep receiving.
                 try:
-                    data = self.client.recv(BUF)
+                    data = self.receiveUntil()
                     if(data):
                         printWithTime( "data from PC: %s" % colorString(repr(data), PINK) )
                         letter = self.generateLetter(data)
@@ -103,6 +131,7 @@ class Wifi(object):
                     break  #accept new connections
 
     def sendData(self, data):
+        '''This function takes care of sending data to the connected client.'''
         # for allocator to call.
         try:
             #self.connect()     # possible for connection to break when required to send data. so need check on connection and connect if needed.
@@ -113,6 +142,7 @@ class Wifi(object):
             traceback.print_exc()
 
     def connect(self):
+        '''This function will try to LISTEN for new connection.'''
         try:
              print colorString("[*] Waiting for Wifi Connection on port %s" % self.port, YELLOW)
              self.client, self.clientaddr = self.server.accept()
@@ -123,6 +153,7 @@ class Wifi(object):
 
 class Bt(object):
     def __init__(self, queue):
+        '''Constructor will initialize and advertise the bluetooth service as "MDP-Server". '''
         self.queue = queue
         self.server = BluetoothSocket(RFCOMM)
         self.uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
@@ -141,6 +172,7 @@ class Bt(object):
                           profiles=[ SERIAL_PORT_PROFILE ])
 
     def generateLetter(self, data):
+        '''generate a Letter object with correct recipient. Function will check for recipient in the header, then will remove the header from the data.'''
         letter = Letter()
         letter.From = self.indicator
 
@@ -156,7 +188,9 @@ class Bt(object):
         return letter
             
     def receiveData(self):
-        # refer to wifi
+        '''This function is a worker function in a thread. This function will try to receive data forever from connected client. 
+        If connection is broken, will fall back to LISTEN state.'''
+
         while 1:
             self.connect()
             while 1:
@@ -174,6 +208,7 @@ class Bt(object):
                     #traceback.print_exc()
                     break
     def sendData(self, data):
+        '''This function takes care of sending data to the connected client.'''
         try:
             self.client.send(data + "\r\n")
             printWithTime( "Sent data to bluetooth: %s" % repr(data) )
@@ -182,6 +217,7 @@ class Bt(object):
             traceback.print_exc()
 
     def connect(self):
+        '''This function will try to LISTEN for new connection.'''
         try:
             print colorString("[*] Waiting for Bluetooth Connection on port %s" % self.port, YELLOW)
             self.client, self.clientinfo = self.server.accept()
@@ -200,6 +236,7 @@ class Usb(object):
         self.isconnected = False
 
     def generateLetter(self, data):
+        '''generate a Letter object to PC. There is no header truncation here because the only recipient is PC.'''
         letter = Letter()
 
         letter.Message = data
@@ -210,6 +247,10 @@ class Usb(object):
         return letter
         
     def receiveData(self):  # sensor data from arduino
+        '''This function is a worker function in a thread. This function will try to receive data forever from Arduino. 
+        If connection is broken, will try to reconnect to the USB for a max of 5 times before giving up.
+        This receive function is slightly more special than the rest, with the additional check for READY signal from arduino as a trigger to the sending thread.
+        ''' 
         count = 0
         while count < 5:
             count+=1
@@ -239,6 +280,7 @@ class Usb(object):
         print "[!] Check your USB port! "
                 
     def sendData(self, cmd):   # commands to arduino
+        '''This function takes care of sending data to arduino.'''
         try:
             self.ser.write(bytes(cmd))
             printWithTime( "Sent data to arduino: %s" % repr(cmd))
@@ -249,6 +291,7 @@ class Usb(object):
             self.readytosend = False                #after every send. must set this back to false.
 
     def connect(self):
+        '''This function attempts to brute force possible serial ports for the arduino because the OS randomize the path of the port after each physical connections.'''
         for port in self.ports:
             try:
                 print "[*] Attempting to connect to Arduino"
@@ -262,6 +305,7 @@ class Usb(object):
         return False
 
     def wait(self):
+        '''This is a function to BLOCK the sending thread until READY signal is received.'''
         while(not usb.readytosend):
             pass
         print colorString("exit usb wait.", GREEN)
@@ -273,7 +317,7 @@ def arduinoSending(queue_usb, usb):
     		continue
         cmd = queue_usb.get()
         print "[arduinoSending] got cmd from queue_usb:", repr(cmd)
-        print "[arduinoSending] content of queue_usb: ", queue_usb.queue
+        #print "[arduinoSending] content of queue_usb: ", queue_usb.queue
         print colorString("[arduinoSending] waiting FOR READY SIGNAL...", YELLOW)
         usb.wait()                      # wait for READY signal from arduino.
         usb.sendData(cmd)

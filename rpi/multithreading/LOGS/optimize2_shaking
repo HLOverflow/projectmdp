@@ -1,0 +1,319 @@
+Script started on Sat 23 Sep 2017 08:47:13 UTC
+]0;pi@MDPGrp25: ~/shortcut[01;32mpi@MDPGrp25[00m:[01;34m~/shortcut $[00m exitsudo python testAll3.py
+[*] Wifi Initialization complete.
+[93m[*] Waiting for Wifi Connection on port 8000[0m
+ [93m[*] Waiting for Bluetooth Connection on port 1[0m
+[*] Attempting to connect to Arduino
+/dev/ttyACM0 didn't work. Trying the next port
+[*] Attempting to connect to Arduino
+[*] Serial link connected
+[[93m1506156437.5[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156437.5[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[92m[*] Connected to PC via wifi.[0m
+[92m[*] Connected to Nexus via bluetooth.[0m
+[[93m1506156463.41[0m]	 data from Nexus: [95m'ALGO:STAE:16:0'[0m
+[94mFROM: ANDROID TO: ALGO MESSAGE: 'STAE:16:0'[0m
+[*] Sending letter from [ANDROID] to [ALGO].
+[[93m1506156463.41[0m]	 [*] Sent data to Pc: 'STAE:16:0'
+[[93m1506156464.93[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156464.93[0m]	 Sent data to arduino: '230'
+[[93m1506156464.98[0m]	 data from Arduino: [95m'234:0:0:0:1:1:0\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:0:1:1:0\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156464.99[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156464.99[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+ [[93m1506156464.99[0m]	 [*] Sent data to Pc: '234:0:0:0:1:1:0\r\n'
+[[93m1506156465.59[0m]	 data from PC: [95m'ANDROID:MAP:f8007000ff01c0038007000000000000000000000000000000000000000000000007000e001f:00000000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:f8007000ff01c0038007000000000000000000000000000000000000000000000007000e001f:00000000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156465.59[0m]	 Sent data to bluetooth: 'MAP:f8007000ff01c0038007000000000000000000000000000000000000000000000007000e001f:00000000\r\n'
+[[93m1506156466.1[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156466.1[0m]	 Sent data to arduino: '226'
+[[93m1506156466.59[0m]	 data from PC: [95m'ANDROID:SP:31:0\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:31:0\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156466.6[0m]	 Sent data to bluetooth: 'SP:31:0\r\n'
+[[93m1506156466.75[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156466.75[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156467.1[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156467.1[0m]	 Sent data to arduino: '230'
+[[93m1506156467.15[0m]	 data from Arduino: [95m'234:0:0:0:1:1:0\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:0:1:1:0\r\n'[0m
+[[93m1506156467.15[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156467.15[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+ [*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156467.15[0m]	 [*] Sent data to Pc: '234:0:0:0:1:1:0\r\n'
+[[93m1506156467.76[0m]	 data from PC: [95m'ANDROID:MAP:f8007000ff01fe038007000e00000000000000000000000000000000000000000007000e001f:0000000000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:f8007000ff01fe038007000e00000000000000000000000000000000000000000007000e001f:0000000000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156467.76[0m]	 Sent data to bluetooth: 'MAP:f8007000ff01fe038007000e00000000000000000000000000000000000000000007000e001f:0000000000\r\n'
+[[93m1506156468.26[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156468.26[0m]	 Sent data to arduino: '226'
+[[93m1506156468.76[0m]	 data from PC: [95m'ANDROID:SP:46:0\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:46:0\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156468.76[0m]	 Sent data to bluetooth: 'SP:46:0\r\n'
+[[93m1506156469.26[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[[93m1506156471.63[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156471.63[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+ [92mexit usb wait.[0m
+[[93m1506156471.63[0m]	 Sent data to arduino: '230'
+[[93m1506156471.68[0m]	 data from Arduino: [95m'234:0:0:2:1:1:0\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:2:1:1:0\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156471.68[0m]	 [*] Sent data to Pc: '234:0:0:2:1:1:0\r\n'
+ [[93m1506156471.69[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156471.69[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156474.72[0m]	 data from PC: [95m'ANDROID:MAP:f8007000ff01fe03fc07000e00180000000000000000000000000000000000000007000e001f:000000001000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:f8007000ff01fe03fc07000e00180000000000000000000000000000000000000007000e001f:000000001000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156474.73[0m]	 Sent data to bluetooth: 'MAP:f8007000ff01fe03fc07000e00180000000000000000000000000000000000000007000e001f:000000001000\r\n'
+[[93m1506156475.63[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156475.63[0m]	 Sent data to arduino: '226'
+[[93m1506156475.8[0m]	 data from PC: [95m'ANDROID:SP:61:0\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:61:0\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156475.8[0m]	 Sent data to bluetooth: 'SP:61:0\r\n'
+[[93m1506156476.15[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156476.15[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156476.23[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156476.23[0m]	 Sent data to arduino: '230'
+[[93m1506156476.28[0m]	 data from Arduino: [95m'234:0:0:1:1:1:0\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:1:1:1:0\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156476.28[0m]	 [*] Sent data to Pc: '234:0:0:1:1:1:0\r\n'
+ [[93m1506156476.28[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156476.29[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156476.89[0m]	 data from PC: [95m'ANDROID:MAP:f8007000ff01fe03fc07f80e00180030000000000000000000000000000000000007000e001f:00000000008000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:f8007000ff01fe03fc07f80e00180030000000000000000000000000000000000007000e001f:00000000008000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156476.89[0m]	 Sent data to bluetooth: 'MAP:f8007000ff01fe03fc07f80e00180030000000000000000000000000000000000007000e001f:00000000008000\r\n'
+[[93m1506156477.4[0m]	 data from PC: [95m'ARDUINO:INS:R\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:R\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:R\r\n' --> '229'
+[arduinoSending] got cmd from queue_usb: '229'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156477.4[0m]	 Sent data to arduino: '229'
+[[93m1506156477.9[0m]	 data from PC: [95m'ANDROID:SP:61:1\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:61:1\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156477.9[0m]	 Sent data to bluetooth: 'SP:61:1\r\n'
+[[93m1506156478.09[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156478.1[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156478.2[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156478.2[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156478.4[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156478.4[0m]	 Sent data to arduino: '230'
+[[93m1506156478.45[0m]	 data from Arduino: [95m'234:0:0:0:1:0:3\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:0:1:0:3\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156478.45[0m]	 [*] Sent data to Pc: '234:0:0:0:1:0:3\r\n'
+[[93m1506156478.45[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156478.45[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156479.06[0m]	 data from PC: [95m'ANDROID:MAP:f8007000ff01fe03fc07f80e00180030000000000000000000000000000000000007000e001f:00000000008000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:f8007000ff01fe03fc07f80e00180030000000000000000000000000000000000007000e001f:00000000008000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156479.06[0m]	 Sent data to bluetooth: 'MAP:f8007000ff01fe03fc07f80e00180030000000000000000000000000000000000007000e001f:00000000008000\r\n'
+[[93m1506156479.56[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156479.57[0m]	 Sent data to arduino: '226'
+[[93m1506156480.06[0m]	 data from PC: [95m'ANDROID:SP:62:1\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:62:1\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156480.06[0m]	 Sent data to bluetooth: 'SP:62:1\r\n'
+[[93m1506156480.21[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156480.21[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156480.57[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156480.57[0m]	 Sent data to arduino: '230'
+[[93m1506156480.62[0m]	 data from Arduino: [95m'234:0:0:0:1:0:3\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:0:1:0:3\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156480.62[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156480.62[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+ [[93m1506156480.62[0m]	 [*] Sent data to Pc: '234:0:0:0:1:0:3\r\n'
+[[93m1506156481.23[0m]	 data from PC: [95m'ANDROID:MAP:fc007800ff01fe03fc07f80f00180030000000000000000000000000000000000007000e001f:100000000030000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:fc007800ff01fe03fc07f80f00180030000000000000000000000000000000000007000e001f:100000000030000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156481.24[0m]	 Sent data to bluetooth: 'MAP:fc007800ff01fe03fc07f80f00180030000000000000000000000000000000000007000e001f:100000000030000\r\n'
+[[93m1506156481.74[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156481.74[0m]	 Sent data to arduino: '226'
+[[93m1506156482.24[0m]	 data from PC: [95m'ANDROID:SP:63:1\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:63:1\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156482.24[0m]	 Sent data to bluetooth: 'SP:63:1\r\n'
+[[93m1506156482.74[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[[93m1506156506.64[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156506.64[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+ [92mexit usb wait.[0m
+[[93m1506156506.64[0m]	 Sent data to arduino: '230'
+[[93m1506156506.69[0m]	 data from Arduino: [95m'234:0:0:0:1:1:0\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:0:1:1:0\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156506.69[0m]	 [*] Sent data to Pc: '234:0:0:0:1:1:0\r\n'
+[[93m1506156506.69[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156506.69[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156507.38[0m]	 data from PC: [95m'ANDROID:MAP:fe007c00ff01fe03fc07f80f80180030000000000000000000000000000000000007000e001f:10000000000e000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:fe007c00ff01fe03fc07f80f80180030000000000000000000000000000000000007000e001f:10000000000e000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156507.38[0m]	 Sent data to bluetooth: 'MAP:fe007c00ff01fe03fc07f80f80180030000000000000000000000000000000000007000e001f:10000000000e000\r\n'
+[[93m1506156507.89[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+[[93m1506156507.89[0m]	 Sent data to arduino: '226'
+[[93m1506156508.39[0m]	 data from PC: [95m'ANDROID:SP:64:1\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:64:1\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156508.39[0m]	 Sent data to bluetooth: 'SP:64:1\r\n'
+[[93m1506156508.88[0m]	 data from PC: [95m'ARDUINO:RS\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'RS\r\n' --> '230'
+[arduinoSending] got cmd from queue_usb: '230'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[[93m1506156510.4[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156510.4[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+ [92mexit usb wait.[0m
+[[93m1506156510.4[0m]	 Sent data to arduino: '230'
+[[93m1506156510.45[0m]	 data from Arduino: [95m'234:0:0:0:1:1:0\r\n'[0m
+[94mFROM: ARDUINO TO: ALGO MESSAGE: '234:0:0:0:1:1:0\r\n'[0m
+[*] Sending letter from [ARDUINO] to [ALGO].
+[[93m1506156510.45[0m]	 [*] Sent data to Pc: '234:0:0:0:1:1:0\r\n'
+[[93m1506156510.45[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156510.45[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[[93m1506156511.06[0m]	 data from PC: [95m'ANDROID:MAP:ff007e00ff01ff03fe07fc0fc0180030000000000000000000000000000000000007000e001f:10000000000078000\r\n'[0m
+[94mFROM: ALGO TO: ANDROID MESSAGE: 'MAP:ff007e00ff01ff03fe07fc0fc0180030000000000000000000000000000000000007000e001f:10000000000078000\r\n'[0m
+[*] Sending letter from [ALGO] to [ANDROID].
+[[93m1506156511.06[0m]	 Sent data to bluetooth: 'MAP:ff007e00ff01ff03fe07fc0fc0180030000000000000000000000000000000000007000e001f:10000000000078000\r\n'
+[[93m1506156514.12[0m]	 data from PC: [95m'ARDUINO:INS:F\r\n'[0m
+[94mFROM: ALGO TO: ARDUINO MESSAGE: 'INS:F\r\n'[0m
+[[93m1506156514.12[0m]	 data from PC: [95m'ANDROID:SP:65:1\r\nARDUINO:RS\r\n'[0m
+ [94mFROM: ALGO TO: ANDROID MESSAGE: 'SP:65:1\r\nARDUINO:RS\r\n'[0m
+[*] Sending letter from [ALGO] to [ARDUINO].
+[*] translation: 'INS:F\r\n' --> '226'
+[*] Sending letter from [ALGO] to [ANDROID].
+ [arduinoSending] got cmd from queue_usb: '226'
+[arduinoSending] content of queue_usb:  deque([])
+[93m[arduinoSending] waiting FOR READY SIGNAL...[0m
+[92mexit usb wait.[0m
+ [[93m1506156514.12[0m]	 Sent data to bluetooth: 'SP:65:1\r\nARDUINO:RS\r\n'
+[[93m1506156514.12[0m]	 Sent data to arduino: '226'
+[!] Unable to receive from PC.
+	Error Code: 104
+	Message: Connection reset by peer
+
+[93m[*] Waiting for Wifi Connection on port 8000[0m
+[[93m1506156517.48[0m]	 data from Arduino: [95m'224\r\n'[0m
+[[93m1506156517.48[0m]	 [92m	Arduino sent rpi READY SIGNAL.[0m
+[92m[*] Connected to PC via wifi.[0m
+[[93m1506156520.78[0m]	 data from Nexus: [95m'ALGO:CP:16,2'[0m
+[94mFROM: ANDROID TO: ALGO MESSAGE: 'CP:16,2'[0m
+[*] Sending letter from [ANDROID] to [ALGO].
+[[93m1506156520.78[0m]	 [*] Sent data to Pc: 'CP:16,2'
+[[93m1506156521.2[0m]	 data from Nexus: [95m'ALGO:CP:16,3'[0m
+[94mFROM: ANDROID TO: ALGO MESSAGE: 'CP:16,3'[0m
+[*] Sending letter from [ANDROID] to [ALGO].
+[[93m1506156521.21[0m]	 [*] Sent data to Pc: 'CP:16,3'
+[[93m1506156521.4[0m]	 data from Nexus: [95m'ALGO:CP:16,0'[0m
+[94mFROM: ANDROID TO: ALGO MESSAGE: 'CP:16,0'[0m
+[*] Sending letter from [ANDROID] to [ALGO].
+[[93m1506156521.4[0m]	 [*] Sent data to Pc: 'CP:16,0'
+[!] Unable to receive from PC.
+	Error Code: 104
+	Message: Connection reset by peer
+
+[93m[*] Waiting for Wifi Connection on port 8000[0m
+Killed
+]0;pi@MDPGrp25: ~/shortcut[01;32mpi@MDPGrp25[00m:[01;34m~/shortcut $[00m exit
+exit
+
+Script done on Sat 23 Sep 2017 08:49:36 UTC
