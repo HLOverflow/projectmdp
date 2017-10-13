@@ -316,7 +316,7 @@ def arduinoSending(queue_usb, usb):
     	if queue_usb.empty():
     		continue
         cmd = queue_usb.get()
-        print "[arduinoSending] got cmd from queue_usb:", repr(cmd)
+        #print "[arduinoSending] got cmd from queue_usb:", repr(cmd)
         #print "[arduinoSending] content of queue_usb: ", queue_usb.queue
         print colorString("[arduinoSending] waiting FOR READY SIGNAL...", YELLOW)
         usb.wait()                      # wait for READY signal from arduino.
@@ -329,7 +329,7 @@ def allocate(queue, queue_usb, wifi, bt, usb):
     	if queue.empty():
     		continue
         letter = queue.get()
-        print "[*] Sending letter from [%s] to [%s]." % (letter.From, letter.To)
+        #print "[*] Sending letter from [%s] to [%s]." % (letter.From, letter.To)
         data = letter.Message
         if wifi.indicator in letter.To:
             wifi.sendData(data)
@@ -362,7 +362,7 @@ def AndroidtoArduinoTranslate(data):
         output=ARDUINO.ROTATE_RIGHT
     else:
         print colorString("[!] didn't translate sucessfully: ", RED), repr(data)
-    print "[*] translation:", repr(data), "-->" , repr(output)
+    #print "[*] translation:", repr(data), "-->" , repr(output)
     return output
 
 def PCtoArduinoTranslate(data):
@@ -380,7 +380,7 @@ def PCtoArduinoTranslate(data):
         output=ARDUINO.GET_SENSOR_DATA
     else:
         print colorString("[!] didn't translate sucessfully: ", RED), repr(data)
-    print "[*] translation:", repr(data), "-->" , repr(output)
+    #print "[*] translation:", repr(data), "-->" , repr(output)
     return output
 
 if __name__ == "__main__":
