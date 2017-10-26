@@ -63,7 +63,7 @@ class Wifi(object):
         self.server = socket.socket()   #default TCP
         self.port=8000
         self.indicator = PC.NAME
-    
+        self.End = False
 
         # binding to port
         try:
@@ -154,7 +154,10 @@ class Wifi(object):
              traceback.print_exc()
 
     def endGracefully(self):
-        self.server.shutdown(socket.SHUT_RDWR)      #clear away all data with client first
+        try:
+            self.server.shutdown(socket.SHUT_RDWR)      #clear away all data with client first
+        except:
+            pass
         self.server.close()
         print "wifi closed."
         
@@ -423,6 +426,7 @@ if __name__ == "__main__":
     # bt_receive.daemon = True
     # usb_receive.daemon = True
     arduino_send.daemon = True          # set as daemon because it is not a class. can't implement Signals.
+    usb_receive.daemon = True           # will die along when main dies.
 
     wifi_receive.start()
     bt_receive.start()
@@ -433,11 +437,16 @@ if __name__ == "__main__":
     try:
         allocate(q, q_usb, wifi, bt, usb)
     except KeyboardInterrupt:
-        print "received abort signal."
+        print colorString("received abort signal.", YELLOW)
         wifi.End = True
+        print colorString("sent Wifi END signal". YELLOW)
         bt.End = True
+        print colorString("sent Bluetooth END signal", YELLOW)
     except:
         traceback.print_exc()
 
-    print "program end"
+    #wifi_receive.join()
+    #bt_receive.join()       # wait until thread ends then continue main program.
+
+    print colorString("program end", YELLOW)
     
