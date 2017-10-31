@@ -16,13 +16,13 @@ from printTime import *
 # Python 2.7.13 (default, Jan 19 2017, 14:48:08)
 # [GCC 6.3.0 20170124] on linux2
 # Type "help", "copyright", "credits" or "license" for more information.
-# >>> import testAll3
-# >>> help(testAll3)
+# >>> import main
+# >>> help(main)
 
 __author__ = "Hui Lian"
 __doc__ = '''This is to be loaded inside Raspberry Pi. 
-
-Abort by Ctrl-C. Should be able to terminate gracefully.
+This program can be killed using another terminal:  
+$ sudo ./killprogram.sh
 
 This program should be ran with the following commands for best results:
 
@@ -63,7 +63,6 @@ class Wifi(object):
         self.server = socket.socket()   #default TCP
         self.port=8000
         self.indicator = PC.NAME
-    
 
         # binding to port
         try:
@@ -113,7 +112,7 @@ class Wifi(object):
         If connection is broken, will fall back to LISTEN state.'''
 
         # function with while loop should put in thread.
-        while not self.End:        # if connection got cut off, will try to listen for new connection
+        while 1:        # if connection got cut off, will try to listen for new connection
             self.connect()
             while 1:    # while connection still ok, keep receiving.
                 try:
@@ -128,9 +127,8 @@ class Wifi(object):
                         break           # data will be nothing when disconnected
                 except socket.error as msg:
                     print "[!] Unable to receive from PC.\n\tError Code: %d\n\tMessage: %s\n" % (msg[0], msg[1])
+                    #traceback.print_exc()
                     break  #accept new connections
-        # End gracefully
-        self.endGracefully()
 
     def sendData(self, data):
         '''This function takes care of sending data to the connected client.'''
@@ -153,12 +151,6 @@ class Wifi(object):
              print "[!] Cannot accept connection to PC via wifi. "
              traceback.print_exc()
 
-    def endGracefully(self):
-        self.server.shutdown(socket.SHUT_RDWR)      #clear away all data with client first
-        self.server.close()
-        print "wifi closed."
-        
-
 class Bt(object):
     def __init__(self, queue):
         '''Constructor will initialize and advertise the bluetooth service as "MDP-Server". '''
@@ -167,7 +159,6 @@ class Bt(object):
         self.uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
         self.name = "MDP-Server"
         self.indicator = ANDROID.NAME
-        self.End = False
 
         # binding to port/channel
         self.server.bind(("", PORT_ANY))
@@ -200,7 +191,7 @@ class Bt(object):
         '''This function is a worker function in a thread. This function will try to receive data forever from connected client. 
         If connection is broken, will fall back to LISTEN state.'''
 
-        while not self.End:
+        while 1:
             self.connect()
             while 1:
                 try:
@@ -216,9 +207,6 @@ class Bt(object):
                     print "[!] Unable to receive from Nexus"
                     #traceback.print_exc()
                     break
-        # end gracefully
-        self.endGracefully()
-        
     def sendData(self, data):
         '''This function takes care of sending data to the connected client.'''
         try:
@@ -238,16 +226,11 @@ class Bt(object):
             print "[!] Cannot accept connection to Nexus via bluetooth."
             traceback.print_exc()
 
-    def endGracefully(self):
-        self.server.close()
-        print "Bluetooth closed."
-    
-
 class Usb(object):
     def __init__(self, queue):
         self.queue = queue
         self.ports = ['/dev/ttyACM0', '/dev/ttyACM1','/dev/ttyACM2', '/dev/ttyACM3', '/dev/ttyACM4', '/dev/ttyACM5']
-        self.baud_rate = 2000000
+        self.baud_rate = 115200
         self.indicator = ARDUINO.NAME
         self.readytosend = False
         self.isconnected = False
@@ -312,7 +295,7 @@ class Usb(object):
         for port in self.ports:
             try:
                 print "[*] Attempting to connect to Arduino"
-                self.ser = serial.Serial(port, self.baud_rate, timeout=1)
+                self.ser = serial.Serial(port, self.baud_rate, timeout=0.8)
                 print "[*] Serial link connected"
                 return True
             except:
@@ -406,38 +389,17 @@ if __name__ == "__main__":
     wifi = Wifi(q)
     bt = Bt(q)
     usb = Usb(q)
-
-    # Receiving
+    
     wifi_receive = threading.Thread(target=wifi.receiveData)
     bt_receive = threading.Thread(target=bt.receiveData)
     usb_receive = threading.Thread(target=usb.receiveData)
 
-    # Sending
-    arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))
-
-    # moving this thread to main.
-    #allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
-
-    # not sure if should set these threads as daemon...
-    # wifi_receive.daemon = True
-    # bt_receive.daemon = True
-    # usb_receive.daemon = True
-    arduino_send.daemon = True          # set as daemon because it is not a class. can't implement Signals.
+    arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
+    allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
 
     wifi_receive.start()
     bt_receive.start()
     usb_receive.start()
     arduino_send.start()
-    
-    #allocator.start()
-    try:
-        allocate(q, q_usb, wifi, bt, usb)
-    except KeyboardInterrupt:
-        print "received abort signal."
-        wifi.End = True
-        bt.End = True
-    except:
-        traceback.print_exc()
-
-    print "program end"
+    allocator.start()
     
