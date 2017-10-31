@@ -1,0 +1,44 @@
+<div style="width: 600px;">
+<h1><strong>Raspberry Pi</strong></h1>
+<h2><strong>How are messages being routed?</strong></h2>
+<h3><strong>Data structure</strong></h3>
+<img src="letter.jpg" />
+<p>The above is the data structure for the Raspberry Pi to identify the sender and the recipient associated with the message.</p>
+<img src="define2.jpg" />
+<p>From define2.py, these are the string constants agreed upon with each component respectively that the generateLetter() function will check for.</p>
+<h3>Receiving data</h3>
+<img src="bt_receive.jpg" />
+<p>The above is an abstract from the Bluetooth class which was implemented similarly in other classes. When the Bluetooth class receives data, it will generate a letter to address to the correct recipient based on the context of the data. Then, the letter will be put into the queue.</p>
+<h3 style="padding-left: 30px;">Additional</h3>
+<p style="padding-left: 30px;">In the event that the connection breaks, the function receiveData() was implemented to continuously listen for the next connection, thus ensuring availability.</p>
+<h3>Sending data</h3>
+<img src="allocate.jpg" />
+<p>Whenever there is a letter in the queue, the allocate function will read the recipient and send to the message to it. When sending to Arduino, there is a need to do some translation to integer bytes string.</p>
+<h2>How are threads interacting?</h2>
+<p>In summary, there are a total of 5 threads:</p>
+<table border="1">
+<tbody>
+<tr>
+<td>3 threads for each receiving + <br />1 allocate thread for general sending + <br />1 special thread for arduino sending</td>
+</tr>
+</tbody>
+</table>
+<p>There are 2 queues in this program:</p>
+<table border="1">
+<tbody>
+<tr>
+<td>1) queue<br />- all receiving threads will put data into queue<br />- allocate will get data from queue and send the data to their recipient. <br />- if recipient is arduino, send data into another queue_usb.<br /><br />2) queue_usb<br />- arduino sending thread will take from this queue_usb.</td>
+</tr>
+</tbody>
+</table>
+<p>[insert thread diagram here.]</p>
+<p>The above a diagram to represent the interactions of the threads.</p>
+<h2>Communicating with Arduino</h2>
+<p>While Arduino is executing their own procedures, Arduino is unable to receive any commands from Rpi. Hence, we need wait for Arduino to be ready before sending an instruction. </p><p> To avoid this communication from blocking the main sending thread, we delegate the sending to arduino as a separate thread with its own queue.</p>
+<h3>Ready Signal + Busy Waiting + separate thread (arduinoSending + queue_usb) </h3>
+<img src="usbclass.jpg" />
+<p>The moment the serial communication replied with a READY bytes, we will trigger sending by setting readytosend as True.</p>
+<img src="Usb_Send.jpg" />
+<p>The readytosend property will be used to escape the busy waiting loop.</p>
+<p>&nbsp;</p>
+</div>
