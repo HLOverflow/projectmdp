@@ -180,7 +180,9 @@ class Bt(object):
                           profiles=[ SERIAL_PORT_PROFILE ])
 
     def generateLetter(self, data):
-        '''generate a Letter object with correct recipient. Function will check for recipient in the header, then will remove the header from the data.'''
+        '''generate a Letter object with correct recipient. 
+        Function will check for recipient in the header, 
+        then will remove the header from the data.'''
         letter = Letter()
         letter.From = self.indicator
 
@@ -196,7 +198,8 @@ class Bt(object):
         return letter
             
     def receiveData(self):
-        '''This function is a worker function in a thread. This function will try to receive data forever from connected client. 
+        '''This function is a worker function in a thread. 
+        This function will try to receive data forever from connected client. 
         If connection is broken, will fall back to LISTEN state.'''
 
         while 1:
@@ -257,7 +260,8 @@ class Usb(object):
     def receiveData(self):  # sensor data from arduino
         '''This function is a worker function in a thread. This function will try to receive data forever from Arduino. 
         If connection is broken, will try to reconnect to the USB for a max of 5 times before giving up.
-        This receive function is slightly more special than the rest, with the additional check for READY signal from arduino as a trigger to the sending thread.
+        This receive function is slightly more special than the rest, with the additional check 
+        for READY signal from arduino as a trigger to the sending thread.
         ''' 
         count = 0
         while count < 5:
