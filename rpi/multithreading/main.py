@@ -63,10 +63,6 @@ class Wifi(object):
         self.server = socket.socket()   #default TCP
         self.port=8000
         self.indicator = PC.NAME
-<<<<<<< HEAD
-=======
-        self.End = False
->>>>>>> 42d452d3ccd3d21ceef316efbacb1c5e4e48c04d
 
         # binding to port
         try:
@@ -155,8 +151,6 @@ class Wifi(object):
              print "[!] Cannot accept connection to PC via wifi. "
              traceback.print_exc()
 
-<<<<<<< HEAD
-=======
     def endGracefully(self):
         try:
             self.server.shutdown(socket.SHUT_RDWR)      #clear away all data with client first
@@ -165,8 +159,6 @@ class Wifi(object):
         self.server.close()
         print "wifi closed."
         
-
->>>>>>> 42d452d3ccd3d21ceef316efbacb1c5e4e48c04d
 class Bt(object):
     def __init__(self, queue):
         '''Constructor will initialize and advertise the bluetooth service as "MDP-Server". '''
@@ -410,10 +402,9 @@ if __name__ == "__main__":
     bt_receive = threading.Thread(target=bt.receiveData)
     usb_receive = threading.Thread(target=usb.receiveData)
 
-<<<<<<< HEAD
     arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
     allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
-=======
+
     # Sending
     arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))
 
@@ -426,15 +417,12 @@ if __name__ == "__main__":
     # usb_receive.daemon = True
     arduino_send.daemon = True          # set as daemon because it is not a class. can't implement Signals.
     usb_receive.daemon = True           # will die along when main dies.
->>>>>>> 42d452d3ccd3d21ceef316efbacb1c5e4e48c04d
 
     wifi_receive.start()
     bt_receive.start()
     usb_receive.start()
     arduino_send.start()
-<<<<<<< HEAD
     allocator.start()
-=======
     
     #allocator.start()
     try:
@@ -452,5 +440,4 @@ if __name__ == "__main__":
     #bt_receive.join()       # wait until thread ends then continue main program.
 
     print colorString("program end", YELLOW)
->>>>>>> 42d452d3ccd3d21ceef316efbacb1c5e4e48c04d
     
