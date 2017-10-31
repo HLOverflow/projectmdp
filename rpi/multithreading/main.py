@@ -348,10 +348,12 @@ def allocate(queue, queue_usb, wifi, bt, usb):
             # have to block the send until can verify arduino is ready
             if letter.From == ANDROID.NAME:
                 cmd = AndroidtoArduinoTranslate(data)
-                queue_usb.put(cmd);         # delegate the work to the another thread, prevents blocking in this thread.
+                if cmd:
+                    queue_usb.put(cmd);         # delegate the work to the another thread, prevents blocking in this thread.
             elif letter.From == PC.NAME:
                 cmd = PCtoArduinoTranslate(data)
-                queue_usb.put(cmd)          # delegate the work to the another thread, prevents blocking in this thread.
+                if cmd:
+                    queue_usb.put(cmd)          # delegate the work to the another thread, prevents blocking in this thread.
             else:
                 pass
         else:
@@ -402,42 +404,25 @@ if __name__ == "__main__":
     bt_receive = threading.Thread(target=bt.receiveData)
     usb_receive = threading.Thread(target=usb.receiveData)
 
-    arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))    
-    allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
-
     # Sending
     arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))
 
     # moving this thread to main.
     #allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
 
-    # not sure if should set these threads as daemon...
-    # wifi_receive.daemon = True
-    # bt_receive.daemon = True
-    # usb_receive.daemon = True
-    arduino_send.daemon = True          # set as daemon because it is not a class. can't implement Signals.
+    arduino_send.daemon = True
     usb_receive.daemon = True           # will die along when main dies.
+    wifi_receive.daemon = True
+    bt_receive.daemon = True
 
     wifi_receive.start()
     bt_receive.start()
     usb_receive.start()
     arduino_send.start()
-    allocator.start()
     
-    #allocator.start()
     try:
         allocate(q, q_usb, wifi, bt, usb)
-    except KeyboardInterrupt:
-        print colorString("received abort signal.", YELLOW)
-        wifi.End = True
-        print colorString("sent Wifi END signal". YELLOW)
-        bt.End = True
-        print colorString("sent Bluetooth END signal", YELLOW)
     except:
         traceback.print_exc()
-
-    #wifi_receive.join()
-    #bt_receive.join()       # wait until thread ends then continue main program.
-
-    print colorString("program end", YELLOW)
+        exit(0)
     
