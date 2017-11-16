@@ -21,10 +21,9 @@ from printTime import *
 
 __author__ = "Hui Lian"
 __doc__ = '''This is to be loaded inside Raspberry Pi. 
-This program can be killed using another terminal:  
-$ sudo ./killprogram.sh
+This program can be killed by Ctrl-C
 
-This program should be ran with the following commands for best results:
+This program should be ran with the following commands for logging:
 
 $ script LOGS/<filename>
 $ sudo python main.py
@@ -410,9 +409,6 @@ if __name__ == "__main__":
 
     # Sending
     arduino_send = threading.Thread(target=arduinoSending, args=(q_usb, usb))
-
-    # moving this thread to main.
-    #allocator = threading.Thread(target=allocate, args=(q, q_usb, wifi, bt, usb))
 
     arduino_send.daemon = True
     usb_receive.daemon = True           # will die along when main dies.
