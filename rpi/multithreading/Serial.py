@@ -1,6 +1,12 @@
 import serial
 import time
 
+__author__ = 'Mavric'
+
+__doc__ = '''
+This is a separate script to remote control the arduino without main.py
+'''
+
 ARDUINO_READY = 0xE0
 RPI_READY = 0xE1
 MOVE_FORWARD = 0xE2
